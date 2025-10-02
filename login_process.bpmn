@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI">
+  <process id="LoginProcess" isExecutable="true">
+    <startEvent id="StartEvent" name="Início"/>
+    <userTask id="LoginPage" name="Usuário acessa página de Login"/>
+    <userTask id="InsertCredentials" name="Usuário insere credenciais"/>
+    <serviceTask id="SendToBackend" name="Front-end envia dados (HTTPS)"/>
+    <serviceTask id="ValidateFields" name="Back-end valida campos"/>
+    <serviceTask id="CheckUser" name="Procurar usuário no banco de dados"/>
+    <exclusiveGateway id="GatewayUser"/>
+    <endEvent id="FailUser" name="Usuário ou senha inválidos"/>
+    <serviceTask id="CheckPassword" name="Comparar senha com hash"/>
+    <exclusiveGateway id="GatewayPassword"/>
+    <endEvent id="FailPassword" name="Usuário ou senha inválidos"/>
+    <serviceTask id="CreateSession" name="Criar sessão/JWT"/>
+    <userTask id="RedirectDashboard" name="Redirecionar usuário para dashboard"/>
+    <endEvent id="EndEvent" name="Fim"/>
+    <sequenceFlow id="Flow_StartEvent_LoginPage" sourceRef="StartEvent" targetRef="LoginPage"/>
+    <sequenceFlow id="Flow_LoginPage_InsertCredentials" sourceRef="LoginPage" targetRef="InsertCredentials"/>
+    <sequenceFlow id="Flow_InsertCredentials_SendToBackend" sourceRef="InsertCredentials" targetRef="SendToBackend"/>
+    <sequenceFlow id="Flow_SendToBackend_ValidateFields" sourceRef="SendToBackend" targetRef="ValidateFields"/>
+    <sequenceFlow id="Flow_ValidateFields_CheckUser" sourceRef="ValidateFields" targetRef="CheckUser"/>
+    <sequenceFlow id="Flow_CheckUser_GatewayUser" sourceRef="CheckUser" targetRef="GatewayUser"/>
+    <sequenceFlow id="Flow_GatewayUser_FailUser" sourceRef="GatewayUser" targetRef="FailUser" name="Usuário não encontrado"/>
+    <sequenceFlow id="Flow_GatewayUser_CheckPassword" sourceRef="GatewayUser" targetRef="CheckPassword" name="Usuário encontrado"/>
+    <sequenceFlow id="Flow_CheckPassword_GatewayPassword" sourceRef="CheckPassword" targetRef="GatewayPassword"/>
+    <sequenceFlow id="Flow_GatewayPassword_FailPassword" sourceRef="GatewayPassword" targetRef="FailPassword" name="Senha inválida"/>
+    <sequenceFlow id="Flow_GatewayPassword_CreateSession" sourceRef="GatewayPassword" targetRef="CreateSession" name="Senha correta"/>
+    <sequenceFlow id="Flow_CreateSession_RedirectDashboard" sourceRef="CreateSession" targetRef="RedirectDashboard"/>
+    <sequenceFlow id="Flow_RedirectDashboard_EndEvent" sourceRef="RedirectDashboard" targetRef="EndEvent"/>
+  </process>
+</definitions>
